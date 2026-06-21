@@ -2,6 +2,10 @@ import os
 from functools import partial
 from pathlib import Path
 
+from torchvision.transforms import v2 as _v2
+if not hasattr(_v2.Transform, 'transform'):
+    _v2.Transform.transform = lambda self, inpt, params: self._transform(inpt, params)
+
 import hydra
 import lightning as pl
 import stable_pretraining as spt
@@ -36,8 +40,8 @@ def lejepa_forward(self, batch, stage, cfg):
     pred_emb = self.model.predict(ctx_emb, ctx_act) # pred
 
     # LeWM loss
-    output["pred_loss"] = (pred_emb - tgt_emb).pow(2).mean()
-    output["sigreg_loss"]= self.sigreg(emb.transpose(0, 1))
+    output["pred_loss"] = (pred_emb - tgt_emb).pow(2).mean() # MSE
+    output["sigreg_loss"]= self.sigreg(emb.transpose(0, 1)) 
     output["loss"] = output["pred_loss"] + lambd * output["sigreg_loss"]  
 
     losses_dict = {f"{stage}/{k}": v.detach() for k, v in output.items() if "loss" in k}
