@@ -112,7 +112,7 @@ def run(cfg: DictConfig):
     # Map each dataset row’s episode_idx to its max_start_idx
     col_name = "episode_idx" if "episode_idx" in dataset.column_names else "ep_idx"
     max_start_per_row = np.array(
-        [max_start_idx_dict[ep_id] for ep_id in dataset.get_col_data(col_name)]
+        [max_start_idx_dict.get(ep_id, -1) for ep_id in dataset.get_col_data(col_name)]
     )
 
     # remove all the lines of dataset for which dataset['step_idx'] > max_start_per_row
