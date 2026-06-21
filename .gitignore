@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+.stable_worldmodel/
+outputs/
+wandb/
+lewm-pusht/
+kickbacks.vsix
